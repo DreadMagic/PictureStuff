@@ -35,7 +35,7 @@ public class Picture extends SimplePicture
   public Picture(String fileName)
   {
     // let the parent class handle this fileName
-    super(fileName);
+    super("images/"+fileName);
   }
   
   /**
