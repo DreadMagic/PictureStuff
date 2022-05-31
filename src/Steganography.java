@@ -112,7 +112,51 @@ public class Steganography {
             }
         return diff;
     }
+    public static Picture showDifferentArea(Picture ss, ArrayList<Point> p){
+        Picture s = new Picture(ss);
+        if(p.isEmpty()) return s;
+        int x = s.getWidth(), X = 0, y = s.getWidth(), Y = 0;
+        for(Point a: p){
+            if(a.getX()>X) X=a.getX();
+            if(a.getX()<x) x=a.getX();
+            if(a.getY()>Y) Y=a.getY();
+            if(a.getY()<y) y=a.getY();
+        }
+        Pixel[][] pix = s.getPixels2D();
+        for(int r = x; r<=X; r++) {
+            if (r == x || r == X)
+                for (int c = Y; c >= y; c--)
+                    pix[r][c].setColor(Color.BLACK);
+            pix[r][y].setColor(Color.BLACK);
+            pix[r][Y].setColor(Color.BLACK);
+        }
+        return s;
+    }
+    public static ArrayList<Integer> encodeString(String s){
+        s = s.toUpperCase();
+        String alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        ArrayList<Integer> result = new ArrayList<Integer>();
 
+        for(int i = 0; i < s.length(); i++)
+            result.add(alpha.indexOf(s.charAt(i)) + 1);
+
+        result.add(0);
+        return result;
+    }
+    private static String decodeString(ArrayList<Integer> s){
+        String alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String result = "";
+
+        for(int i = 0; i < s.size(); i++) {
+            if (s.get(i) == 0) break;
+            result = result + alpha.indexOf(s.get(i) - 1);
+        }
+
+        return result;
+    }
+
+//    public static int[] getBitPairs(int num){
+//    }
 
 
     public static void main(String[] args) {
@@ -148,22 +192,35 @@ public class Steganography {
 //        hidden2.explore();
 //        revealPicture(hidden2).explore();
 
+//
+//        Picture arch = new Picture("arch.jpg");
+//        revealPicture(arch).explore();
+//        Picture koala = new Picture("koala.jpg");
+//        Picture robot1 = new Picture("robot.jpg");
+//        ArrayList<Point> pointList = findDifferences(arch, arch);
+//        System.out.println("Pointlist after comparing two identical pictures has a size of " + pointList.size());
+//        pointList = findDifferences(arch, koala);
+//        System.out.println("Pointlist after comparing two different sized pictures has a size of " + pointList.size());
+//        Picture arch2 = hidePicture(arch, robot1, 65, 102);
+//        pointList = findDifferences(arch, arch2);
+//        System.out.println("Pointlist after hiding a picture has a size of " + pointList.size());
+//        arch.show();
+//        arch2.show();
+//        revealPicture(arch).explore();
+//        revealPicture(arch2).explore();
 
-        Picture arch = new Picture("arch.jpg");
-        revealPicture(arch).explore();
-        Picture koala = new Picture("koala.jpg");
-        Picture robot1 = new Picture("robot.jpg");
-        ArrayList<Point> pointList = findDifferences(arch, arch);
-        System.out.println("Pointlist after comparing two identical pictures has a size of " + pointList.size());
-        pointList = findDifferences(arch, koala);
-        System.out.println("Pointlist after comparing two different sized pictures has a size of " + pointList.size());
-        Picture arch2 = hidePicture(arch, robot1, 65, 102);
-        pointList = findDifferences(arch, arch2);
-        System.out.println("Pointlist after hiding a picture has a size of " + pointList.size());
-        arch.show();
-        arch2.show();
-        revealPicture(arch).explore();
-        revealPicture(arch2).explore();
+        Picture hall = new Picture ("femaleLionAndHall.jpg");
+        Picture robot2 = new Picture ("robot.jpg");
+        Picture flower2 = new Picture ("flower1.jpg");
+        Picture hall2 = hidePicture (hall, robot2, 50, 300);
+        Picture hall3 = hidePicture (hall2, flower2, 115, 275);
+        hall3.explore();
+        if(!isSame(hall, hall3)) {
+            Picture hall4 = showDifferentArea(hall, findDifferences(hall, hall3));
+            hall4.show();
+            Picture unhiddenHall3 = revealPicture(hall3);
+            unhiddenHall3.show();
+        }
 
     }
 }
