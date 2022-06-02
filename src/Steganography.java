@@ -1,5 +1,7 @@
 import java.awt.Color;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Steganography {
 
@@ -134,7 +136,7 @@ public class Steganography {
     }
     public static ArrayList<Integer> encodeString(String s){
         s = s.toUpperCase();
-        String alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
         ArrayList<Integer> result = new ArrayList<Integer>();
 
         for(int i = 0; i < s.length(); i++)
@@ -144,19 +146,68 @@ public class Steganography {
         return result;
     }
     private static String decodeString(ArrayList<Integer> s){
-        String alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
         String result = "";
 
         for(int i = 0; i < s.size(); i++) {
             if (s.get(i) == 0) break;
-            result = result + alpha.indexOf(s.get(i) - 1);
+            result += alpha.charAt(s.get(i) - 1);
         }
 
         return result;
     }
 
-//    public static int[] getBitPairs(int num){
-//    }
+    public static int[] getBitPairs(int num){
+        int[] result = new int[3];
+        result[2] = num/16;
+        result[1] = num/4%4;
+        result[0] = num%4;
+        return result;
+    }
+
+    public static Picture hideText(Picture source, String s){
+        Picture copy = new Picture(source);
+        int[][] a = new int[s.length()][3];
+        ArrayList<Integer> ss = encodeString(s);
+        for(int i = 0; i<a.length; i++){
+            a[i] = getBitPairs(ss.get(i));
+        }
+        int x = 0;
+        Pixel[][] pix = copy.getPixels2D();
+        for(int r = 0; r<source.getHeight(); r++){
+            for(int c =0; c<source.getWidth(); c++){
+                pix[r][c].setRed(pix[r][c].getRed()/4*4 + a[x][0]);
+                pix[r][c].setGreen(pix[r][c].getGreen()/4*4 + a[x][1]);
+                pix[r][c].setBlue(pix[r][c].getBlue()/4*4 + a[x][2]);
+                x++;
+                if(x>=a.length) return copy;
+            }
+        }
+        return copy;
+    }
+
+    public static int getColorNum(Pixel p){
+        int r = p.getRed()%4;
+        int g = p.getGreen()%4*4;
+        int b = p.getBlue()%4*16;
+        return r+g+b;
+    }
+    public static String revealText(Picture source){
+        Pixel[][] pix = source.getPixels2D();
+        ArrayList<Integer> a = new ArrayList<>();
+        for(int r = 0; r< pix.length; r++){
+            for(int c = 0; c<pix[0].length; c++){
+                int x = getColorNum(pix[r][c]);
+                a.add(x);
+                if(x==0) {
+                    System.out.println("yeet");
+                    System.out.println(Arrays.toString(a.toArray()));
+                    return(decodeString(a));
+                }
+            }
+        }
+        return decodeString(a);
+    }
 
 
     public static void main(String[] args) {
@@ -209,18 +260,20 @@ public class Steganography {
 //        revealPicture(arch).explore();
 //        revealPicture(arch2).explore();
 
-        Picture hall = new Picture ("femaleLionAndHall.jpg");
-        Picture robot2 = new Picture ("robot.jpg");
-        Picture flower2 = new Picture ("flower1.jpg");
-        Picture hall2 = hidePicture (hall, robot2, 50, 300);
-        Picture hall3 = hidePicture (hall2, flower2, 115, 275);
-        hall3.explore();
-        if(!isSame(hall, hall3)) {
-            Picture hall4 = showDifferentArea(hall, findDifferences(hall, hall3));
-            hall4.show();
-            Picture unhiddenHall3 = revealPicture(hall3);
-            unhiddenHall3.show();
-        }
-
+//        Picture hall = new Picture ("femaleLionAndHall.jpg");
+//        Picture robot2 = new Picture ("robot.jpg");
+//        Picture flower2 = new Picture ("flower1.jpg");
+//        Picture hall2 = hidePicture (hall, robot2, 50, 300);
+//        Picture hall3 = hidePicture (hall2, flower2, 115, 275);
+//        hall3.explore();
+//        if(!isSame(hall, hall3)) {
+//            Picture hall4 = showDifferentArea(hall, findDifferences(hall, hall3));
+//            hall4.show();
+//            Picture unhiddenHall3 = revealPicture(hall3);
+//            unhiddenHall3.show();
+//        }
+        Picture swanT = new Picture("swan.jpg");
+        Picture copy = hideText(swanT, "Hello World");
+        System.out.println(revealText(copy));
     }
 }
