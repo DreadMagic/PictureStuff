@@ -1,5 +1,7 @@
 import java.awt.Color;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Steganography {
 
@@ -134,7 +136,7 @@ public class Steganography {
     }
     public static ArrayList<Integer> encodeString(String s){
         s = s.toUpperCase();
-        String alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
         ArrayList<Integer> result = new ArrayList<Integer>();
 
         for(int i = 0; i < s.length(); i++)
@@ -144,20 +146,120 @@ public class Steganography {
         return result;
     }
     private static String decodeString(ArrayList<Integer> s){
-        String alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
         String result = "";
 
         for(int i = 0; i < s.size(); i++) {
             if (s.get(i) == 0) break;
-            result = result + alpha.indexOf(s.get(i) - 1);
+            result += alpha.charAt(s.get(i) - 1);
         }
 
         return result;
     }
 
-//    public static int[] getBitPairs(int num){
+    public static int[] getBitPairs(int num){
+        int[] result = new int[3];
+        result[2] = num/16;
+        result[1] = num/4%4;
+        result[0] = num%4;
+        return result;
+    }
+
+    public static Picture hideText(Picture source, String s){
+        Picture copy = new Picture(source);
+        int[][] a = new int[s.length()+1][3];
+        ArrayList<Integer> ss = encodeString(s);
+//        System.out.println(ss.size());
+        for(int i = 0; i<a.length; i++){
+            a[i] = getBitPairs(ss.get(i));
+        }
+        int x = 0;
+        Pixel[][] pix = copy.getPixels2D();
+        for(int r = 0; r<source.getHeight(); r++){
+            for(int c =0; c<source.getWidth(); c++){
+                pix[r][c].setRed(pix[r][c].getRed()/4*4 + a[x][0]);
+                pix[r][c].setGreen(pix[r][c].getGreen()/4*4 + a[x][1]);
+                pix[r][c].setBlue(pix[r][c].getBlue()/4*4 + a[x][2]);
+                x++;
+//                System.out.println(pix[r][c].getColor());
+                if(x>=a.length) return copy;
+            }
+        }
+        return copy;
+    }
+
+    public static int getColorNum(Pixel p){
+        int r = p.getRed()%4;
+        int g = p.getGreen()%4*4;
+        int b = p.getBlue()%4*16;
+        return r+g+b;
+    }
+    public static String revealText(Picture source){
+        Pixel[][] pix = source.getPixels2D();
+        ArrayList<Integer> a = new ArrayList<>();
+        for(int r = 0; r< pix.length; r++){
+            for(int c = 0; c<pix[0].length; c++){
+                int x = getColorNum(pix[r][c]);
+                a.add(x);
+                if(x==0) {
+//                    System.out.println("yeet");
+//                    System.out.println(Arrays.toString(a.toArray()));
+                    return(decodeString(a));
+                }
+            }
+        }
+        return decodeString(a);
+    }
+//    public static Picture pasteTransparent(Color background, Picture paste, Picture base){
+//        Picture copybase = new Picture(base);
+//
+//
+//
+//
+//        for(int row = 0; row<copybase.getWidth(); row++)
+//            for(int col = 0; col<copybase.getHeight(); col++){
+//
+//            }
+//
+//        return copybase;
 //    }
 
+    public static Picture blurImage(Picture base){
+        Picture blur = new Picture(base);
+
+        Pixel[][] basepix = base.getPixels2D();
+        Pixel[][] blurpix = blur.getPixels2D();
+
+        for(int row = 0; row < base.getHeight(); row++)
+            for(int col = 0; col < base.getWidth(); col++) {
+                int avgred = 0;
+                int avggreen = 0;
+                int avgblue =0;
+
+                if (row != 0){
+                    avgred += basepix[row-1][col].getRed();
+                    avggreen += basepix[row-1][col].getGreen();
+                    avgblue += basepix[row-1][col].getBlue();
+                }
+                if (row != base.getHeight()-1){
+                    avgred += basepix[row+1][col].getRed();
+                    avggreen += basepix[row+1][col].getGreen();
+                    avgblue += basepix[row+1][col].getBlue();
+                }
+                if (col != 0){
+                    avgred += basepix[row][col-1].getRed();
+                    avggreen += basepix[row][col-1].getGreen();
+                    avgblue += basepix[row][col-1].getBlue();
+                }
+                if (col != base.getHeight()-1){
+                    avgred += basepix[row][col+1].getRed();
+                    avggreen += basepix[row][col+1].getGreen();
+                    avgblue += basepix[row][col+1].getBlue();
+                }
+                //Set to average
+            }
+        return blur;
+    }
 
     public static void main(String[] args) {
 //        Picture beach = new Picture ("beach.jpg");
@@ -209,18 +311,24 @@ public class Steganography {
 //        revealPicture(arch).explore();
 //        revealPicture(arch2).explore();
 
-        Picture hall = new Picture ("femaleLionAndHall.jpg");
-        Picture robot2 = new Picture ("robot.jpg");
-        Picture flower2 = new Picture ("flower1.jpg");
-        Picture hall2 = hidePicture (hall, robot2, 50, 300);
-        Picture hall3 = hidePicture (hall2, flower2, 115, 275);
-        hall3.explore();
-        if(!isSame(hall, hall3)) {
-            Picture hall4 = showDifferentArea(hall, findDifferences(hall, hall3));
-            hall4.show();
-            Picture unhiddenHall3 = revealPicture(hall3);
-            unhiddenHall3.show();
-        }
+//        Picture hall = new Picture ("femaleLionAndHall.jpg");
+//        Picture robot2 = new Picture ("robot.jpg");
+//        Picture flower2 = new Picture ("flower1.jpg");
+//        Picture hall2 = hidePicture (hall, robot2, 50, 300);
+//        Picture hall3 = hidePicture (hall2, flower2, 115, 275);
+//        hall3.explore();
+//        if(!isSame(hall, hall3)) {
+//            Picture hall4 = showDifferentArea(hall, findDifferences(hall, hall3));
+//            hall4.show();
+//            Picture unhiddenHall3 = revealPicture(hall3);
+//            unhiddenHall3.show();
+//        }
+//        Picture swanT = new Picture("swan.jpg");
+//        Picture copytxt = hideText(swanT, "Hello World");
+//        System.out.println(revealText(copytxt));
 
+//        Picture robotT = new Picture("robot.jpg");
+//        Picture copytxt2 = hideText(robotT, "We the People of the United States in Order to form a more perfect Union establish Justice insure domestic Tranquility provide for the common defence promote the general Welfare and secure the Blessings of Liberty to ourselves and our Posterity do ordain and establish this Constitution for the United States of America");
+//        System.out.println(revealText(copytxt2));
     }
 }
