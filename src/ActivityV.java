@@ -160,8 +160,8 @@ public class ActivityV {
         return copy;
     }
 
-//    public static Picture pipeMix(Picture a, Picture b){
-//
+//    public static Picture extraImage(Picture a, Picture b){
+//        //Will print the bigger image with the smaller image taking up the space in the bigger image it can
 //    }
 
 
