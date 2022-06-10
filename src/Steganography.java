@@ -232,34 +232,73 @@ public class Steganography {
 
         for(int row = 0; row < base.getHeight(); row++)
             for(int col = 0; col < base.getWidth(); col++) {
-                int avgred = 0;
-                int avggreen = 0;
-                int avgblue =0;
+                int avgred = 0, avggreen = 0, avgblue =0;
+                int numSquares = 0;
 
                 if (row != 0){
                     avgred += basepix[row-1][col].getRed();
                     avggreen += basepix[row-1][col].getGreen();
                     avgblue += basepix[row-1][col].getBlue();
+                    numSquares++;
                 }
                 if (row != base.getHeight()-1){
                     avgred += basepix[row+1][col].getRed();
                     avggreen += basepix[row+1][col].getGreen();
                     avgblue += basepix[row+1][col].getBlue();
+                    numSquares++;
                 }
                 if (col != 0){
                     avgred += basepix[row][col-1].getRed();
                     avggreen += basepix[row][col-1].getGreen();
                     avgblue += basepix[row][col-1].getBlue();
+                    numSquares++;
                 }
-                if (col != base.getHeight()-1){
+                if (col != base.getWidth()-1){
                     avgred += basepix[row][col+1].getRed();
                     avggreen += basepix[row][col+1].getGreen();
                     avgblue += basepix[row][col+1].getBlue();
+                    numSquares++;
                 }
                 //Set to average
+                avgred += basepix[row][col].getRed();
+                avggreen += basepix[row][col].getGreen();
+                avgblue += basepix[row][col].getBlue();
+                numSquares++;
+
+                avgred/=numSquares;
+                avggreen/=numSquares;
+                avgblue/=numSquares;
+
+                blurpix[row][col].setRed(avgred);
+                blurpix[row][col].setGreen(avggreen);
+                blurpix[row][col].setBlue(avgblue);
             }
+
         return blur;
     }
+
+    public static Picture blurTimes(int blurTime, Picture base){
+        if(blurTime == 0) return base;
+        Picture copy = new Picture(base);
+        return blurTimes(blurTime-1, blurImage(copy));
+    }
+
+    public static Picture invertColor(Picture base) {
+        Picture copy = new Picture(base);
+        Pixel[][] copyPixels = copy.getPixels2D();
+        for (int row = 0; row < copy.getHeight(); row++)
+            for (int col = 0; col < copy.getWidth(); col++) {
+                copyPixels[row][col].setRed(255 - copyPixels[row][col].getRed());
+                copyPixels[row][col].setGreen(255 - copyPixels[row][col].getGreen());
+                copyPixels[row][col].setBlue(255 - copyPixels[row][col].getBlue());
+            }
+        return copy;
+    }
+
+
+//    public static Picture fourCorners(Picture base, int corner){
+//
+//    }
 
     public static void main(String[] args) {
 //        Picture beach = new Picture ("beach.jpg");
@@ -330,5 +369,15 @@ public class Steganography {
 //        Picture robotT = new Picture("robot.jpg");
 //        Picture copytxt2 = hideText(robotT, "We the People of the United States in Order to form a more perfect Union establish Justice insure domestic Tranquility provide for the common defence promote the general Welfare and secure the Blessings of Liberty to ourselves and our Posterity do ordain and establish this Constitution for the United States of America");
 //        System.out.println(revealText(copytxt2));
+
+//        Picture hottie = new Picture("raghav2.jpg");
+//        Picture babe = new Picture("daddyMihir.jpg");
+//        Picture jo = new Picture("joe.jpg");
+//
+//        jo.show();
+//        invertColor(jo).show();
+//        blurImage(jo).show();
+//        blurTimes(50,jo).show();
+
     }
 }
