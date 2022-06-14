@@ -108,7 +108,7 @@ public class ActivityV {
         return base1;
     }
 
-    public static Picture plaidImage(Picture a, Picture b, int size){
+    public static Picture plaid(Picture a, Picture b, int size){
         if (!Steganography.canHide(a,b) || !Steganography.canHide(b,a)) return a;
 
         Picture aCopy = new Picture(a);
