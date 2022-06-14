@@ -74,6 +74,8 @@ public class ActivityV {
             }
         return copy;
     }
+
+
                                 ///////////////////
                                 //MULTIPLE IMAGES//
                                 ///////////////////
@@ -93,18 +95,19 @@ public class ActivityV {
                 }
             return copy;
         }
-        else if (Steganography.canHide(base2, base1)) {
+        else if (Steganography.canHide(base2,base1)){
             Picture copy = new Picture(base1);
             Pixel[][] copyPixels = copy.getPixels2D();
-            Pixel[][] base2Pixels = base2.getPixels2D();
-            for (int row = 0; row < base1.getHeight(); row++)
-                for (int col = 0; col < base1.getWidth(); col++) {
-                    copyPixels[row][col].setRed((copyPixels[row][col].getRed() + base2Pixels[row][col].getRed()) / 2);
-                    copyPixels[row][col].setGreen((copyPixels[row][col].getGreen() + base2Pixels[row][col].getGreen()) / 2);
-                    copyPixels[row][col].setBlue((copyPixels[row][col].getBlue() + base2Pixels[row][col].getBlue()) / 2);
+            Pixel[][] base1Pixels = base1.getPixels2D();
+            for (int row = 0; row < base2.getHeight(); row ++)
+                for (int col = 0; col < base2.getWidth(); col ++){
+                    copyPixels[row][col].setRed((copyPixels[row][col].getRed() + base1Pixels[row][col].getRed()) / 2 );
+                    copyPixels[row][col].setGreen((copyPixels[row][col].getGreen() + base1Pixels[row][col].getGreen()) / 2 );
+                    copyPixels[row][col].setBlue((copyPixels[row][col].getBlue() + base1Pixels[row][col].getBlue()) / 2 );
                 }
             return copy;
         }
+
         return base1;
     }
 
@@ -241,28 +244,70 @@ public class ActivityV {
         return copy;
     }
 
-//    public static Picture extraImage(Picture a, Picture b){
-//        //Will print the bigger image with the smaller image taking up the space in the bigger image it can
-//    }
+    public static Picture extraImage(Picture a, Picture b){
+        if (a.getHeight() > b.getHeight() && a.getWidth() > b.getWidth()) {
+            Picture copyA = new Picture(a);
+            Pixel[][] aPixels = copyA.getPixels2D();
+            Pixel[][] bPixels = b.getPixels2D();
+
+            for (int row = 0; row < b.getHeight(); row++)
+                for (int col = 0; col < b.getWidth(); col++) {
+                    aPixels[row][col].setRed(bPixels[row][col].getRed());
+                    aPixels[row][col].setGreen(bPixels[row][col].getGreen());
+                    aPixels[row][col].setBlue(bPixels[row][col].getBlue());
+                }
+            return copyA;
+        }
+        else if (b.getHeight() > a.getHeight() && b.getWidth() > a.getWidth()){
+            Picture copyB = new Picture(b);
+            Pixel[][] bPixels = copyB.getPixels2D();
+            Pixel[][] aPixels = a.getPixels2D();
+
+            for (int row = 0; row < a.getHeight(); row++)
+                for (int col = 0; col < a.getWidth(); col++) {
+                    bPixels[row][col].setRed(aPixels[row][col].getRed());
+                    bPixels[row][col].setGreen(aPixels[row][col].getGreen());
+                    bPixels[row][col].setBlue(aPixels[row][col].getBlue());
+                }
+            return copyB;
+        }
+
+        else{
+            return a;
+        }
+    }
 
 
     public static void main(String[] args) {
-//        Picture hottie = new Picture("raghav2.jpg");
-//        Picture babe = new Picture("daddyMihir.jpg");
-//        Picture jo = new Picture("joe.jpg");
 
-        Picture gore = new Picture("gorge.jpg");
+        Picture koala = new Picture("koala.jpg");
+        Picture snowman = new Picture("snowman.jpg");
+        Picture temple = new Picture("caterpillar.jpg");
+        Picture hall = new Picture("femaleLionAndHall.jpg");
+        Picture gorge = new Picture("gorge.jpg");
         Picture swan = new Picture("swan.jpg");
+        Picture blueMotorcycle = new Picture("blueMotorcycle.jpg");
+        Picture redMotorcycle = new Picture("redMotorcycle.jpg");
+        Picture blueMark = new Picture("blue-mark.jpg");
+        Picture moon = new Picture("moon-surface.jpg");
+        Picture seagull = new Picture("seagull.jpg");
 
-//        gore.show();
-//        invertColor(gore).show();
-//        blurImage(gore).show();
-//        blurTimes(50,gore).show();
-//        mixedImage(gore, swan).show();
-        for(int i = 10; i<= 20; i++){
-            plaidImage(gore,swan,i).show();
-        }
-//        plaidImage(gore,swan,13).show();
-//        randomImage(gore, swan, 5).show(); //1 in frequency chance of pixel being from picture b
+
+//        blurTimes(50, koala).show();
+//        invertColor(snowman).show();
+        mixedImage(hall, temple).show();
+//        plaid(gorge, swan, 1).show();
+//        plaid(gorge, swan, 10).show();
+//        plaid(gorge, swan, 50).show();
+//        plaid(gorge, swan, 100).show();
+//        superPlaid(blueMark, redMotorcycle, blueMotorcycle, moon, 70).show();
+//        Plaid4(blueMark, redMotorcycle, blueMotorcycle, moon, 70).show();
+//        randomImage(gorge, swan, 2).show(); //1 in frequency chance of pixel being from picture b
+//        randomImage(gorge, swan, 5).show(); //1 in frequency chance of pixel being from picture b
+        mixedImage(seagull, blurTimes(50, invertColor(extraImage(seagull, gorge)))).show();
+
+//        for(int i = 1; i<= 100; i++){
+//            plaid(swan,gorge,i).show();
+//        }
     }
 }
