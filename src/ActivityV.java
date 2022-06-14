@@ -114,25 +114,59 @@ public class ActivityV {
         Picture aCopy = new Picture(a);
         Pixel[][] aPixels = aCopy.getPixels2D();
         Pixel[][] bPixels = b.getPixels2D();
-        int check = 0;
-
-        boolean switchpic = false;
-        boolean switchrow = false;
+        int checkcol = 0;
+        int checkrow = 0;
 
 
         for(int row = 0; row < a.getHeight(); row ++) {
-            check = 0;
-            if(row%size==0) switchrow = true;
-            if(switchrow) check = size;
-//            System.out.println(switchrow);
-            for (int col = 0; col < a.getWidth(); col++, check++) {
-                if (check % size == 0) switchpic = !switchpic;
-                if (switchpic) {
-                    {
+            checkcol = 0;
+            if(row/size%2==0) checkcol = size;
+//
+            for (int col = 0; col < a.getWidth(); col++, checkcol++) {
+                if (checkcol / size % 2 == 0){
                         aPixels[row][col].setRed(bPixels[row][col].getRed());
                         aPixels[row][col].setGreen(bPixels[row][col].getGreen());
                         aPixels[row][col].setBlue(bPixels[row][col].getBlue());
-                    }
+                }
+
+            }
+        }
+        return aCopy;
+    }
+    public static Picture superPlaid(Picture a, Picture b, Picture c, Picture d, int size){
+        if (!(Steganography.canHide(a,b) && Steganography.canHide(a,c) && Steganography.canHide(a,d) && Steganography.canHide(b,c) && Steganography.canHide(b,d) && Steganography.canHide(c,d)) ) return a;
+
+        Picture aCopy = new Picture(a);
+        Pixel[][] aPixels = aCopy.getPixels2D();
+        Pixel[][] bPixels = b.getPixels2D();
+        Pixel[][] cPixels = c.getPixels2D();
+        Pixel[][] dPixels = d.getPixels2D();
+        int checkcol = 0;
+        int checkrow = 0;
+
+
+        for(int row = 0; row < a.getHeight(); row ++) {
+            checkcol = 0;
+            if(row/size%4==1) checkcol = size;
+            if(row/size%4==2) checkcol = 2*size;
+            if(row/size%4==3) checkcol = 3*size;
+
+//
+            for (int col = 0; col < a.getWidth(); col++, checkcol++) {
+                if (checkcol / size % 4 == 1){
+                    aPixels[row][col].setRed(bPixels[row][col].getRed());
+                    aPixels[row][col].setGreen(bPixels[row][col].getGreen());
+                    aPixels[row][col].setBlue(bPixels[row][col].getBlue());
+                }
+                if (checkcol / size % 4 == 2){
+                    aPixels[row][col].setRed(cPixels[row][col].getRed());
+                    aPixels[row][col].setGreen(cPixels[row][col].getGreen());
+                    aPixels[row][col].setBlue(cPixels[row][col].getBlue());
+                }
+                if (checkcol / size % 4 == 3){
+                    aPixels[row][col].setRed(dPixels[row][col].getRed());
+                    aPixels[row][col].setGreen(dPixels[row][col].getGreen());
+                    aPixels[row][col].setBlue(dPixels[row][col].getBlue());
                 }
 
             }
@@ -140,6 +174,53 @@ public class ActivityV {
         return aCopy;
     }
 
+    public static Picture Plaid4(Picture a, Picture b, Picture c, Picture d, int size){
+        if (!(Steganography.canHide(a,b) && Steganography.canHide(a,c) && Steganography.canHide(a,d) && Steganography.canHide(b,c) && Steganography.canHide(b,d) && Steganography.canHide(c,d)) ) return a;
+
+        Picture aCopy = new Picture(a);
+        Pixel[][] aPixels = aCopy.getPixels2D();
+        Pixel[][] bPixels = b.getPixels2D();
+        Pixel[][] cPixels = c.getPixels2D();
+        Pixel[][] dPixels = d.getPixels2D();
+        int checkcol = 0;
+        int checkrow = 0;
+        boolean switchrow = false;
+        int switchcount = 0;
+
+
+        for(int row = 0; row < a.getHeight(); row ++) {
+            checkcol = 0;
+            if(row/size%2==1) checkcol = size;
+            if(row/size > switchcount){
+                switchcount++;
+                switchrow=!switchrow;
+            }
+//
+            for (int col = 0; col < a.getWidth(); col++, checkcol++) {
+                if (switchrow) {
+                    if (checkcol / size % 2 == 0) {
+                        aPixels[row][col].setRed(bPixels[row][col].getRed());
+                        aPixels[row][col].setGreen(bPixels[row][col].getGreen());
+                        aPixels[row][col].setBlue(bPixels[row][col].getBlue());
+                    }
+                }
+                else {
+                    if (checkcol / size % 2 == 0) {
+                        aPixels[row][col].setRed(cPixels[row][col].getRed());
+                        aPixels[row][col].setGreen(cPixels[row][col].getGreen());
+                        aPixels[row][col].setBlue(cPixels[row][col].getBlue());
+                        }
+                    if (checkcol / size % 2 == 1) {
+                        aPixels[row][col].setRed(dPixels[row][col].getRed());
+                        aPixels[row][col].setGreen(dPixels[row][col].getGreen());
+                        aPixels[row][col].setBlue(dPixels[row][col].getBlue());
+                        }
+                    }
+
+            }
+        }
+        return aCopy;
+    }
     public static Picture randomImage(Picture a, Picture b, int frequency){
         if (!Steganography.canHide(a,b) || !Steganography.canHide(b,a)) return a;
 
