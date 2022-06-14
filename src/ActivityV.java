@@ -81,34 +81,23 @@ public class ActivityV {
                                 ///////////////////
 
     public static Picture mixedImage(Picture base1, Picture base2){
+        int height = base1.getHeight();
+        if(height > base2.getHeight()) height = base2.getHeight();
+        int width = base1.getWidth();
+        if(width > base2.getWidth()) width = base2.getWidth();
 
+        Picture copy = new Picture(height,width);
+        Pixel[][] copyPixels = copy.getPixels2D();
+        Pixel[][] base1Pixels = base1.getPixels2D();
+        Pixel[][] base2Pixels = base2.getPixels2D();
+        for (int row = 0; row < copy.getHeight(); row ++)
+            for (int col = 0; col < copy.getWidth(); col ++){
+                copyPixels[row][col].setRed((base2Pixels[row][col].getRed() + base1Pixels[row][col].getRed()) / 2 );
+                copyPixels[row][col].setGreen((base2Pixels[row][col].getGreen() + base1Pixels[row][col].getGreen()) / 2 );
+                copyPixels[row][col].setBlue((base2Pixels[row][col].getBlue() + base1Pixels[row][col].getBlue()) / 2 );
+            }
+        return copy;
 
-        if (Steganography.canHide(base1, base2)){
-            Picture copy = new Picture(base2);
-            Pixel[][] copyPixels = copy.getPixels2D();
-            Pixel[][] base1Pixels = base1.getPixels2D();
-            for (int row = 0; row < base2.getHeight(); row ++)
-                for (int col = 0; col < base2.getWidth(); col ++){
-                    copyPixels[row][col].setRed((copyPixels[row][col].getRed() + base1Pixels[row][col].getRed()) / 2 );
-                    copyPixels[row][col].setGreen((copyPixels[row][col].getGreen() + base1Pixels[row][col].getGreen()) / 2 );
-                    copyPixels[row][col].setBlue((copyPixels[row][col].getBlue() + base1Pixels[row][col].getBlue()) / 2 );
-                }
-            return copy;
-        }
-        else if (Steganography.canHide(base2,base1)){
-            Picture copy = new Picture(base1);
-            Pixel[][] copyPixels = copy.getPixels2D();
-            Pixel[][] base1Pixels = base1.getPixels2D();
-            for (int row = 0; row < base2.getHeight(); row ++)
-                for (int col = 0; col < base2.getWidth(); col ++){
-                    copyPixels[row][col].setRed((copyPixels[row][col].getRed() + base1Pixels[row][col].getRed()) / 2 );
-                    copyPixels[row][col].setGreen((copyPixels[row][col].getGreen() + base1Pixels[row][col].getGreen()) / 2 );
-                    copyPixels[row][col].setBlue((copyPixels[row][col].getBlue() + base1Pixels[row][col].getBlue()) / 2 );
-                }
-            return copy;
-        }
-
-        return base1;
     }
 
     public static Picture plaid(Picture a, Picture b, int size){
@@ -282,7 +271,7 @@ public class ActivityV {
 
         Picture koala = new Picture("koala.jpg");
         Picture snowman = new Picture("snowman.jpg");
-        Picture temple = new Picture("caterpillar.jpg");
+        Picture island = new Picture("CumberlandIsland.jpg");
         Picture hall = new Picture("femaleLionAndHall.jpg");
         Picture gorge = new Picture("gorge.jpg");
         Picture swan = new Picture("swan.jpg");
@@ -295,8 +284,9 @@ public class ActivityV {
 
 //        blurTimes(50, koala).show();
 //        invertColor(snowman).show();
-        mixedImage(hall, temple).show();
+//        mixedImage(hall, island).show();
 //        plaid(gorge, swan, 1).show();
+        mixedImage(swan,gorge).show();
 //        plaid(gorge, swan, 10).show();
 //        plaid(gorge, swan, 50).show();
 //        plaid(gorge, swan, 100).show();
@@ -304,7 +294,7 @@ public class ActivityV {
 //        Plaid4(blueMark, redMotorcycle, blueMotorcycle, moon, 70).show();
 //        randomImage(gorge, swan, 2).show(); //1 in frequency chance of pixel being from picture b
 //        randomImage(gorge, swan, 5).show(); //1 in frequency chance of pixel being from picture b
-        mixedImage(seagull, blurTimes(50, invertColor(extraImage(seagull, gorge)))).show();
+//        mixedImage(seagull, blurTimes(50, invertColor(extraImage(seagull, gorge)))).show();
 
 //        for(int i = 1; i<= 100; i++){
 //            plaid(swan,gorge,i).show();
