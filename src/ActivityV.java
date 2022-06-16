@@ -1,3 +1,5 @@
+import java.awt.*;
+
 public class ActivityV {
 
                                                 ///////////////////
@@ -280,24 +282,43 @@ public class ActivityV {
         Picture blueMark = new Picture("blue-mark.jpg");
         Picture moon = new Picture("moon-surface.jpg");
         Picture seagull = new Picture("seagull.jpg");
+        Picture flower = new Picture("flower1.jpg");
 
-
+        //BLUR [ISHAAN]
+//        koala.show();
 //        blurTimes(50, koala).show();
+//
+//        //INVERT COLOR [SPIKE]
+//        snowman.show();
 //        invertColor(snowman).show();
+//
+//        //MIXED IMAGE [SPIKE]
+//        hall.show();
+//        island.show();
 //        mixedImage(hall, island).show();
+//
+//        //PLAID (2 Pictures) [JACK]
+//        gorge.show();
+//        swan.show();
 //        plaid(gorge, swan, 1).show();
-        mixedImage(swan,gorge).show();
 //        plaid(gorge, swan, 10).show();
 //        plaid(gorge, swan, 50).show();
 //        plaid(gorge, swan, 100).show();
+//
+//        //Plaid (4 Pictures) [JACK]
+//        blueMark.show();
+//        redMotorcycle.show();
+//        blueMotorcycle.show();
+//        moon.show();
 //        superPlaid(blueMark, redMotorcycle, blueMotorcycle, moon, 70).show();
 //        Plaid4(blueMark, redMotorcycle, blueMotorcycle, moon, 70).show();
+//
+//        //Random Image [ISHAAN]
+//        gorge.show();
+//        swan.show();
 //        randomImage(gorge, swan, 2).show(); //1 in frequency chance of pixel being from picture b
 //        randomImage(gorge, swan, 5).show(); //1 in frequency chance of pixel being from picture b
-//        mixedImage(seagull, blurTimes(50, invertColor(extraImage(seagull, gorge)))).show();
-
-//        for(int i = 1; i<= 100; i++){
-//            plaid(swan,gorge,i).show();
-//        }
+        flower.show();
+        darkToLightGradient(flower).show();
     }
 }
