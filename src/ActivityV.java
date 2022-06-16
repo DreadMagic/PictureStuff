@@ -168,6 +168,45 @@ public class ActivityV {
         return aCopy;
     }
 
+    public static Picture darkToLightGradient(Picture a){
+        Picture aCopy = new Picture(a);
+        Pixel[][] aPixels = a.getPixels2D();
+        Pixel[][] aCopyPixels = aCopy.getPixels2D();
+        Pixel[] finalPixels = new Pixel[aPixels.length * aPixels[0].length];
+
+
+        for(int row = 0; row < aPixels.length; row++)
+            for(int col = 0; col < aPixels[0].length; col++)
+                finalPixels[col + row * (aPixels[0].length)] = aCopyPixels[row][col];
+
+
+        Color currLow = finalPixels[0].getColor();
+        int lowIndex = 0;
+        for(int j = 0; j < finalPixels.length; j++) {
+            currLow = finalPixels[j].getColor();
+            lowIndex = j;
+            for (int i = j; i < finalPixels.length; i++) {
+                int colorVal = finalPixels[i].getRed() + finalPixels[i].getGreen() + finalPixels[i].getBlue();
+                int lowVal = currLow.getRed() + currLow.getGreen() + currLow.getBlue();
+                if (colorVal < lowVal) {
+                    lowIndex = i;
+                    currLow = finalPixels[i].getColor();
+                }
+            }
+            Color temp = new Color(finalPixels[lowIndex].getRed(), finalPixels[lowIndex].getGreen(), finalPixels[lowIndex].getBlue());
+            finalPixels[lowIndex].setColor(finalPixels[j].getColor());
+            finalPixels[j].setColor(temp);
+
+        }
+
+        for (int row = 0; row < aCopyPixels.length; row++)
+            for(int col = 0; col < aCopyPixels[0].length; col++) {
+                aCopyPixels[row][col].setColor(finalPixels[col + row * aCopyPixels[0].length].getColor());
+            }
+
+        return aCopy;
+    }
+
     public static Picture Plaid4(Picture a, Picture b, Picture c, Picture d, int size){
         if (!(Steganography.canHide(a,b) && Steganography.canHide(a,c) && Steganography.canHide(a,d) && Steganography.canHide(b,c) && Steganography.canHide(b,d) && Steganography.canHide(c,d)) ) return a;
 
